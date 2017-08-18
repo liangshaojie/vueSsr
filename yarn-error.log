@@ -1,0 +1,61 @@
+Arguments: 
+  /home/python/Downloads/node-v6.1.0-linux-x64/bin/node /home/python/Downloads/node-v6.1.0-linux-x64/bin/yarn
+
+PATH: 
+  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/python/Downloads/node-v6.1.0-linux-x64/bin
+
+Yarn version: 
+  0.27.5
+
+Node version: 
+  6.1.0
+
+Platform: 
+  linux x64
+
+npm manifest: 
+  {
+    "name": "fire",
+    "version": "1.0.0",
+    "description": "Nuxt.js project",
+    "author": "xwp <xwp_fullstack@163.com>",
+    "private": true,
+    "scripts": {
+      "dev": "backpack dev",
+      "build": "nuxt build && backpack build",
+      "start": "cross-env NODE_ENV=production node build/main.js",
+      "precommit": "npm run lint",
+      "lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
+    },
+    "dependencies": {
+      "cross-env": "^5.0.1",
+      "koa": "^2.3.0",
+      "nuxt": "^1.0.0-rc3",
+      "source-map-support": "^0.4.15"
+    },
+    "devDependencies": {
+      "babel-eslint": "^7.1.1",
+      "backpack-core": "^0.3.0",
+      "eslint": "^3.13.1",
+      "eslint-config-standard": "^10.2.1",
+      "eslint-plugin-html": "^2.0.3",
+      "eslint-plugin-import": "^2.2.0",
+      "eslint-plugin-node": "^4.2.2",
+      "eslint-plugin-promise": "^3.4.0",
+      "eslint-plugin-standard": "^3.0.1",
+      "nodemon": "^1.11.0",
+      "scmp": "^2.0.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: connect ECONNREFUSED 104.16.62.173:443
+      at Object.exports._errnoException (util.js:949:11)
+      at exports._exceptionWithHostPort (util.js:972:20)
+      at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1080:14)
