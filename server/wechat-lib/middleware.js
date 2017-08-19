@@ -21,21 +21,25 @@ export default function (opts, reply) {
         ctx.body = 'Failed'
         return false
       }
-      const data = await getRawBody(ctx.req,{
-        length:ctx.length,
-        limit:'1mb',
-        encoding:ctx.charset
+      const data = await getRawBody(ctx.req, {
+        length: ctx.length,
+        limit: '1mb',
+        encoding: ctx.charset
       })
+
       const content = await util.parseXML(data)
       const message = util.formatMessage(content.xml)
-      console.log(content);
+
       ctx.weixin = message
-      await reply.apply(ctx,[ctx,next])
+
+      await reply.apply(ctx, [ctx, next])
+
       const replyBody = ctx.body
       const msg = ctx.weixin
-      const xml = util.tpl(replyBody,msg)
+      const xml = util.tpl(replyBody, msg)
+
       console.log(xml);
-      console.log(replyBody);
+
       ctx.status = 200
       ctx.type = 'application/xml'
       ctx.body = xml

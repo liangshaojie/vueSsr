@@ -49,8 +49,8 @@ function tpl(content, message) {
   if (!content) {
     content = 'Empty news'
   }
-  if (content && content.tpye) {
-    type = content.tpye
+  if (content && content.type) {
+    type = content.type
   }
   let info = Object.assign({}, {
     content: content,
@@ -59,6 +59,7 @@ function tpl(content, message) {
     toUserName: message.FromUserName,
     fromUserName: message.ToUserName
   })
+  console.log(info);
   return template(info)
 }
 
