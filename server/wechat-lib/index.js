@@ -20,7 +20,6 @@ export default class Wechat {
     options = Object.assign({},options,{json:true})
     try {
       const response = await request(options)
-      console.log(response);
       return response
     }catch (err){
       console.error(err)
@@ -29,12 +28,12 @@ export default class Wechat {
   }
 
   async fetchAccessToken() {
-    const data = await this.getAccessToken()
+    var data = await this.getAccessToken()
     if (!this.isValidAccessToken(data)) {
-      return await this.updateAccessToken()
+      data =  await this.updateAccessToken()
     }
-    await this.saveAccessToken()
-    if (isValid(data)) {
+    await this.saveAccessToken(data)
+    if (this.isValidAccessToken(data)) {
       return await this.updateAccessToken()
     }
     return data
@@ -44,8 +43,8 @@ export default class Wechat {
     const url = api.accessToken+'&appid=' + this.appID + '&secret='+this.appSecret
     const data = await this.request({url:url})
     const now = (new Date().getTime())
-    const expirsIn = now + (data.expirse_in - 20)*1000
-    data.expirse_in = expirsIn
+    const expirsIn = now + (data.expires_in - 20)*1000
+    data.expires_in = expirsIn
     return data
   }
 
