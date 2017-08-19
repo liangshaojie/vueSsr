@@ -9,7 +9,7 @@ const port = process.env.PORT || 3006
 // Import and Set Nuxt.js options
 let config = require('../nuxt.config.js')
 config.dev = !(process.env === 'production')
-const MIDDLEWARES = ['router']
+const MIDDLEWARES = ['database','router']
 
 class Server {
   constructor(){

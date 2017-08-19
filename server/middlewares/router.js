@@ -2,6 +2,7 @@ import Router from 'koa-router'
 import config from '../config'
 import sha1 from 'sha1'
 
+import '../wechat'
 export const router = app => {
   const router = new Router()
   router.get('/wechat-head', (ctx,next) => {
@@ -16,7 +17,7 @@ export const router = app => {
     }
   })
   // router.post('/wechat-head', (ctx,next) => {
-  // 
+  //
   // })
   app.use(router.routes())
   app.use(router.allowedMethods())

@@ -14,7 +14,10 @@
   "dependencies": {
     "cross-env": "^5.0.1",
     "koa": "^2.3.0",
+    "mongoose": "^4.11.7",
     "nuxt": "^1.0.0-rc3",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1",
     "source-map-support": "^0.4.15"
   },
   "devDependencies": {
