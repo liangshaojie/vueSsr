@@ -1,8 +1,8 @@
 export default {
   db:'mongodb://localhost/ice',
   wechat:{
-    appID:'wx1378ad383da2fef5',
-    appSecret:'432a75e091f9593b6cc4b3d0338b057e',
+    appID:'wxcae8613f2d22a8d9',
+    appSecret:'f1b0b853aca316ac2e85d8d5eaecf2bf',
     token:'liangshaojie'
   }
 }
