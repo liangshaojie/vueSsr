@@ -2,7 +2,10 @@ const tip = '我的卡里新，欢迎来到这里\n'
 
 export default async (ctx, next) => {
   const message = ctx.weixin
-  console.log(message);
+  //orryJwEYFPTne7drHJScOgFoTNJ0
+  let mp = require('../wechat')
+  let client = mp.getWechat()
+
   if(message.MsgType === 'event'){
     if(message.Event === 'subscribe'){
       ctx.body = tip
@@ -12,6 +15,11 @@ export default async (ctx, next) => {
       ctx.body = message.Latitude + ':' + message.Longitude
     }
   } else if (message.MsgType === 'text') {
+    if( message.Content === '1'){
+
+      const data = await client.handle('getTagList','orryJwEYFPTne7drHJScOgFoTNJ0')
+      console.log(data);
+    }
     ctx.body = message.Content
   } else if (message.MsgType === 'image') {
     ctx.body = {

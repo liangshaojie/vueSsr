@@ -19,7 +19,26 @@ const api = {
     del: base + 'material/del_material?',
     update: base + 'material/update_news?',
     count: base + 'material/get_materialcount?',
-    batch: base + 'material/batchget_material?',
+    batch: base + 'material/batchget_material?'
+  },
+  tag: {
+    create: base + 'tags/create?',
+    fetch: base + 'tags/get?',
+    update: base + 'tags/update?',
+    del: base + 'tags/delete?',
+    fetchUsers: base + 'user/tag/get?',
+    batchTag: base + 'tags/members/batchtagging?',
+    batchUnTag: base + 'tags/members/batchuntagging?',
+    getTagList: base + 'tags/getidlist?'
+  },
+  user: {
+    remark: base + 'user/info/updateremark?',
+    info: base + 'user/info?',
+    batchgetInfo: base + 'user/info/batchget?',
+    fetchUserList: base + 'user/get?',
+    getBlackList: base + 'tags/members/getblacklist?',
+    batchBlackList: base + 'tags/members/batchblacklist?',
+    batchUnBlackList: base + 'tags/members/batchunblacklist?'
   }
 }
 
@@ -78,7 +97,6 @@ export default class Wechat {
     return data
   }
 
-
   isValidAccessToken(data) {
     if (!data || !data.assess_token || !data.expires_in) {
       return false
@@ -100,8 +118,8 @@ export default class Wechat {
     return data
   }
 
-
   uploadMaterial(token, type, material, permanent) {
+    console.log(token);
     let form = {}
     let url = api.temporary.upload
 
@@ -124,7 +142,7 @@ export default class Wechat {
     if (!permanent) {
       uploadUrl += '&type=' + type
     } else {
-      if(type !== 'news'){
+      if (type !== 'news') {
         form.access_token = token
       }
     }
@@ -143,61 +161,170 @@ export default class Wechat {
     return options
   }
 
-  fetchMaterial(token,mediaId,type,permanent){
+  fetchMaterial(token, mediaId, type, permanent) {
     let form = {}
     let fetchUrl = api.temporary.fetch
 
-    if(permanent){
+    if (permanent) {
       fetchUrl = api.permanent.fetch
     }
 
-    let url = fetchUrl + 'access_token='+token
-    let options = {method:'POST',url:url}
+    let url = fetchUrl + 'access_token=' + token
+    let options = {method: 'POST', url: url}
 
-    if(permanent){
+    if (permanent) {
       form.media_id = mediaId
       form.access_token = token
       options.body = form
-    }else{
-      if(type === 'video'){
-        url = url.replace('https://','http://')
+    } else {
+      if (type === 'video') {
+        url = url.replace('https://', 'http://')
       }
-      url += '&media_id='+mediaId
+      url += '&media_id=' + mediaId
     }
     return options
   }
 
-  deleteMaterial(token,mediaId){
+  deleteMaterial(token, mediaId) {
     const form = {
-      media_id:mediaId
+      media_id: mediaId
     }
-    const url = api.permanent.del + 'access_token='+token + '&media_id'+mediaId
-    return {method:'POST',url:url,body:form}
+    const url = api.permanent.del + 'access_token=' + token + '&media_id' + mediaId
+    return {method: 'POST', url: url, body: form}
   }
 
-  updateMaterial(token,mediaId,news){
+  updateMaterial(token, mediaId, news) {
     const form = {
-      media_id:mediaId
+      media_id: mediaId
     }
-    _.extend(form,news)
-    const url = api.permanent.update + 'access_token='+token + '&media_id'+mediaId
-    return {method:'POST',url:url,body:form}
+    _.extend(form, news)
+    const url = api.permanent.update + 'access_token=' + token + '&media_id' + mediaId
+    return {method: 'POST', url: url, body: form}
   }
 
-  countMaterial(token){
-    const url = api.permanent.count + 'access_token='+token
-    return {method:'POST',url:url}
+  //获取素材总数
+  countMaterial(token) {
+    const url = api.permanent.count + 'access_token=' + token
+    return {method: 'POST', url: url}
   }
 
-  batchMaterial(token,options){
+  //获取永久素材接口
+  batchMaterial(token, options) {
     options.type = options.type || 'image'
     options.offset = options.offset || 0
     options.count = options.count || 10
-    const url = api.permanent.batch + 'access_token='+token
-    return {method:'POST',url:url,body:options}
+    const url = api.permanent.batch + 'access_token=' + token
+    console.log(options);
+    return {method: 'POST', url: url, body: options}
   }
 
+  //重建一个标签
+  createTag(token, name) {
+    const form = {
+      tag: {
+        name: name
+      }
+    }
+    const url = api.tag.create + 'access_token=' + token
 
+    return {method: 'POST', url: url, body: form}
+  }
 
+  //获取公众号已创建的标签
+  fetchTag(token) {
+    const url = api.tag.fetch + 'access_token=' + token
+    return {method: 'GET', url: url}
+  }
+
+  //编辑标签
+  uploadTag(token, id, name) {
+    const form = {
+      "tag": {
+        "id": id,
+        "name": name
+      }
+    }
+    const url = api.tag.update + 'access_token=' + token
+    return {method: 'POST', url: url, body: form}
+  }
+
+  // 删除标签
+  delTag(token, id) {
+    const form = {
+      "tag": {
+        "id": id,
+      }
+    }
+    const url = api.tag.del + 'access_token=' + token
+    return {method: 'POST', url: url, body: form}
+  }
+
+  //获取标签下粉丝列表
+  fetchTagUsers(token, tagid, next_openid) {
+    let form = {
+      "tagid": tagid,
+      "next_openid": next_openid || ''
+    }
+    const url = api.tag.fetchUsers + 'access_token=' + token
+    return {method: 'POST', url: url, body: form}
+  }
+
+  //批量为用户打标签
+  batchTag(token, openid_list, tagid, unTag) {
+    let form = {
+      "openid_list": openid_list,
+      "tagid": tagid
+    }
+    let url;
+    if (unTag) {
+      url = api.tag.batchUnTag + 'access_token=' + token
+    } else {
+      url = api.tag.batchTag + 'access_token=' + token
+    }
+    return {method: 'POST', url: url, body: form}
+  }
+
+  //获取用户身上的标签列表
+  getTagList(token, openid) {
+    let form = {
+      "openid": openid
+    }
+    const url = api.tag.getTagList + 'access_token=' + token
+    return {method: 'POST', url: url, body: form}
+  }
+
+  //设置用户备注名
+  remarkUser(token, openid, remark) {
+    let form = {
+      "openid": openid,
+      "remark": remark
+    }
+    const url = api.user.remark + 'access_token=' + token
+    return {method: 'POST', url: url, body: form}
+  }
+
+  //获取用户基本信息
+  getUserInfo(token, openid, lang) {
+    const url = `${api.user.info}access_token=${token}&openid=${openid}&lang=${lang || 'zh_CN'}`
+    console.log(url);
+    return {method: 'GET', url: url}
+  }
+
+  //批量获取用户基本信息
+  batchUserInfo(token,user_list) {
+    let form = {
+      "user_list": user_list
+    }
+    console.log(form);
+    const url = api.user.batchgetInfo + 'access_token=' + token
+    console.log(url);
+    return {method: 'POST', url: url, body: form}
+  }
+
+  //获取用户基本信息
+  fetchUserList(token, next_openid) {
+    const url = `${api.user.fetchUserList}access_token=${token}&next_openid= ${next_openid || ''}`
+    return {method: 'GET', url: url}
+  }
 
 }

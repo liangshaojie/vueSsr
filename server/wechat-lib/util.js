@@ -59,7 +59,6 @@ function tpl(content, message) {
     toUserName: message.FromUserName,
     fromUserName: message.ToUserName
   })
-  console.log(info);
   return template(info)
 }
 
