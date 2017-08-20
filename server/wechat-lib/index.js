@@ -3,6 +3,7 @@ import formstream from 'formstream'
 import fs from 'fs'
 import path from 'path'
 import * as _ from 'lodash'
+import { sign } from './util'
 
 const base = 'https://api.weixin.qq.com/cgi-bin/'
 
@@ -48,6 +49,9 @@ const api = {
     addconditional: base + 'menu/addconditional?',
     delconditional: base + 'menu/delconditional?',
     get_current_selfmenu_info: base + 'get_current_selfmenu_info?',
+  },
+  ticket:{
+    get: base + 'ticket/getticket?',
   }
 }
 
@@ -71,7 +75,10 @@ export default class Wechat {
     this.appSecret = opts.appSecret
     this.getAccessToken = opts.getAccessToken
     this.saveAccessToken = opts.saveAccessToken
+    this.getTicket = opts.getTicket
+    this.saveTicket = opts.saveTicket
     this.fetchAccessToken()
+    this.fetchTicket()
   }
 
   async request(options) {
@@ -87,13 +94,19 @@ export default class Wechat {
 
   async fetchAccessToken() {
     var data = await this.getAccessToken()
-    if (!this.isValidAccessToken(data)) {
+    if (!this.isValidToken(data,'access_token')) {
       data = await this.updateAccessToken()
     }
     await this.saveAccessToken(data)
-    if (this.isValidAccessToken(data)) {
-      return await this.updateAccessToken()
+    return data
+  }
+
+  async fetchTicket(token) {
+    var data = await this.getTicket()
+    if (!this.isValidToken(data,'ticket')) {
+      data = await this.updateTicket(token)
     }
+    await this.saveTicket(data)
     return data
   }
 
@@ -106,8 +119,19 @@ export default class Wechat {
     return data
   }
 
-  isValidAccessToken(data) {
-    if (!data || !data.assess_token || !data.expires_in) {
+  async updateTicket(token) {
+    const url = api.ticket.get + 'access_token=' + token +'&type=jsapi'
+    const data = await this.request({url: url})
+    const now = (new Date().getTime())
+    const expirsIn = now + (data.expires_in - 20) * 1000
+    data.expires_in = expirsIn
+    return data
+  }
+
+
+
+  isValidToken(data,name) {
+    if (!data || !data[name] || !data.expires_in) {
       return false
     }
     const expirsIn = data.expires_in
@@ -128,7 +152,6 @@ export default class Wechat {
   }
 
   uploadMaterial(token, type, material, permanent) {
-    console.log(token);
     let form = {}
     let url = api.temporary.upload
 
@@ -344,7 +367,6 @@ export default class Wechat {
 
   getMenu(token){
     const url = api.menu.get + 'access_token=' + token
-    console.log(url);
     return {method: 'GET', url: url}
   }
 
@@ -371,5 +393,9 @@ export default class Wechat {
   get_current_selfmenu_info(){
     const url = api.menu.get_current_selfmenu_info + 'access_token=' + token
     return {method: 'GET', url: url}
+  }
+
+  sign(ticket,url){
+    return sign(ticket,url);
   }
 }
