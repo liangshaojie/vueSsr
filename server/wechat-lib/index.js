@@ -5,6 +5,7 @@ import path from 'path'
 import * as _ from 'lodash'
 
 const base = 'https://api.weixin.qq.com/cgi-bin/'
+
 const api = {
   accessToken: base + 'token?grant_type=client_credential',
   temporary: {
@@ -39,6 +40,14 @@ const api = {
     getBlackList: base + 'tags/members/getblacklist?',
     batchBlackList: base + 'tags/members/batchblacklist?',
     batchUnBlackList: base + 'tags/members/batchunblacklist?'
+  },
+  menu: {
+    create: base + 'menu/create?',
+    get: base + 'menu/get?',
+    del: base + 'menu/delete?',
+    addconditional: base + 'menu/addconditional?',
+    delconditional: base + 'menu/delconditional?',
+    get_current_selfmenu_info: base + 'get_current_selfmenu_info?',
   }
 }
 
@@ -311,13 +320,11 @@ export default class Wechat {
   }
 
   //批量获取用户基本信息
-  batchUserInfo(token,user_list) {
+  batchUserInfo(token, user_list) {
     let form = {
       "user_list": user_list
     }
-    console.log(form);
     const url = api.user.batchgetInfo + 'access_token=' + token
-    console.log(url);
     return {method: 'POST', url: url, body: form}
   }
 
@@ -327,4 +334,42 @@ export default class Wechat {
     return {method: 'GET', url: url}
   }
 
+  //自定义菜单创建接口
+  createMenu(token,menu) {
+    const url = api.menu.create + 'access_token=' + token
+    console.log(url);
+    console.log({method: 'POST', url: url, body: menu});
+    return {method: 'POST', url: url, body: menu}
+  }
+
+  getMenu(token){
+    const url = api.menu.get + 'access_token=' + token
+    console.log(url);
+    return {method: 'GET', url: url}
+  }
+
+  delMenu(token){
+    const url = api.menu.del + 'access_token=' + token
+    return {method: 'GET', url: url}
+  }
+  addconditional(token,menu,rule){
+    const url = api.menu.addconditional + 'access_token=' + token
+    const form = {
+      "button":menu,
+      "matchrule":rule
+    }
+    return {method: 'POST', url: url, body: form}
+  }
+
+  delconditional(token,menuid){
+    const url = api.menu.delconditional + 'access_token=' + token
+    const form = {
+      "menuid":menuid
+    }
+    return {method: 'POST', url: url, body: form}
+  }
+  get_current_selfmenu_info(){
+    const url = api.menu.get_current_selfmenu_info + 'access_token=' + token
+    return {method: 'GET', url: url}
+  }
 }
