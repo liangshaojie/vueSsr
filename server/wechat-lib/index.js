@@ -106,6 +106,7 @@ export default class Wechat {
     if (!this.isValidToken(data,'ticket')) {
       data = await this.updateTicket(token)
     }
+
     await this.saveTicket(data)
     return data
   }
@@ -136,7 +137,6 @@ export default class Wechat {
     }
     const expirsIn = data.expires_in
     const now = (new Date().getTime())
-
     if (now < expirsIn) {
       return true
     } else {

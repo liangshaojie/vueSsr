@@ -30,12 +30,34 @@ TicketSchema.pre('save', function (next) {
 TicketSchema.statics = {
   async getTicket () {
     const ticket = await this.findOne({ name: 'ticket' }).exec()
-
     return ticket
   },
 
+
+  async saveAccessToken(data) {
+    let token = await this.findOne({
+      name: 'access_token'
+    }).exec()
+    console.log(data);
+    if (token) {
+      token.token = data.access_token
+      token.expires_in = data.expires_in
+    } else {
+      token = new Token({
+        name: 'access_token',
+        token: data.token,
+        expires_in: data.expires_in
+      })
+    }
+    await token.save()
+    return data
+  },
+
+
   async saveTicket (data) {
     let ticket = await this.findOne({ name: 'ticket' }).exec()
+    console.log(555);
+    console.log(data);
     if (ticket) {
       ticket.ticket = data.ticket
       ticket.expires_in = data.expires_in

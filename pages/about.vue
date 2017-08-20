@@ -21,7 +21,7 @@
       const wx = window.wx
       const url = window.location.href
 
-      this.$store.dispatch('getWechatSignature', url)
+      this.$store.dispatch('getWechatSignature', encodeURIComponent(url) )
           .then(res => {
             if (res.data.success) {
               const params = res.data.params
@@ -43,7 +43,10 @@
                 ]
               })
               wx.ready(() => {
-                wx.hideAllNonBaseMenuItem()
+                wx.previewImage({
+                  current: 'https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=2919535460,3965929771&fm=96', // 当前显示图片的http链接
+                  urls: ['https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=2919535460,3965929771&fm=96'] // 需要预览的图片http链接列表SSS
+                });
                 console.log('success');
               })
             }
