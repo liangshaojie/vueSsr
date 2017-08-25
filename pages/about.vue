@@ -59,7 +59,6 @@
     .title {
         margin-top: 50px;
     }
-
     .info {
         font-weight: 300;
         color: #9aabb1;
