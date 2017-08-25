@@ -17,6 +17,7 @@
     "ejs": "^2.5.7",
     "formstream": "^1.1.0",
     "koa": "^2.3.0",
+    "koa-router": "^7.2.1",
     "lodash": "^4.17.4",
     "mongoose": "^4.11.7",
     "nuxt": "^1.0.0-rc3",
@@ -24,6 +25,7 @@
     "raw-body": "^2.3.0",
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
+    "sha1": "^1.1.1",
     "source-map-support": "^0.4.15",
     "xml2js": "^0.4.18"
   },
