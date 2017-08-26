@@ -1,7 +1,7 @@
 import actions from './actions'
 import getters from './getters'
 import mutations from './mutations'
-import vuex from 'vuex'
+import Vuex from 'vuex'
 
 
 
