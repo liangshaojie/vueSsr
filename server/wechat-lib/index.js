@@ -29,14 +29,14 @@ export default class Wechat {
     }
     // 拿token
     async fetchAccessToken() {
-        const data = await this.getAccessToken()
+        let data = await this.getAccessToken()
         if (!this.isValidAccessToken(data)) {
-            return await this.updateAccessToken()
+            data =  await this.updateAccessToken()
         }
         await this.saveAccessToken(data)
-        if (isValid(data)) {
-            return await this.updateAccessToken()
-        }
+        // if (isValid(data)) {
+        //     return await this.updateAccessToken()
+        // }
         return data
     }
     // 更新
