@@ -49,7 +49,6 @@ export default class Wechat {
         return data
     }
 
-
     isValidAccessToken(data) {
         if (!data || !data.assess_token || !data.expires_in) {
             return false

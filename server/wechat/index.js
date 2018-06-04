@@ -14,8 +14,6 @@ const wechatConfig = {
     }
 }
 
-console.log(wechatConfig)
-
 export const getWechat = () => {
     const wechatClient = new Wechat(wechatConfig.wechat)
     return wechatClient
