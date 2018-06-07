@@ -39,19 +39,16 @@ export default function(opts, reply) {
             console.log(replyBody)
             // const xml = util.tpl(replyBody,msg)
             ctx.status = 200
-
             const xml =
             `
                 <xml>  
-                    <ToUserName>< ![CDATA[${content.xml.FromUserName}] ]></ToUserName>  
-                    <FromUserName>< ![CDATA[${content.xml.ToUserName}] ]></FromUserName> 
+                    <ToUserName><![CDATA[${content.xml.FromUserName[0]}]]></ToUserName>  
+                    <FromUserName><![CDATA[${content.xml.ToUserName[0]}]]></FromUserName> 
                     <CreateTime>1348831860</CreateTime> 
-                    <MsgType>< ![CDATA[text] ]></MsgType>  
-                    <Content>< ![CDATA[${replyBody}] ]></Content>
-                    <MsgId>${content.xml.MsgId}</MsgId> 
+                    <MsgType><![CDATA[text]]></MsgType>  
+                    <Content><![CDATA[${replyBody}]]></Content>
                 </xml>
             `
-            console.log(xml)
             ctx.type = 'application/xml'
             ctx.body = xml
         }
