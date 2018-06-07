@@ -5,7 +5,6 @@ import * as util from './util'
 
 export default function(opts, reply) {
     return async function wechatMiddle(ctx, next) {
-        require('../wechat/index.js')
         const token = opts.token;
         let { signature, nonce, timestamp, echostr } = ctx.query;
         const str = [token, timestamp, nonce].sort().join("");
@@ -27,28 +26,15 @@ export default function(opts, reply) {
                 encoding:ctx.charset
             })
             const content = await util.parseXML(data)
-            console.log(content)
-            // const message = await util.formatMessage(content.xml)
-            // ctx.weixin = message
-            ctx.weixin = {}
+            const message = await util.formatMessage(content.xml)
+            ctx.weixin = message
 
             await reply.apply(ctx,[ctx,next])
             const replyBody = ctx.body
             const msg = ctx.weixin
 
-            console.log(replyBody)
-            // const xml = util.tpl(replyBody,msg)
+            const xml = util.tpl(replyBody,msg)
             ctx.status = 200
-            const xml =
-            `
-                <xml>  
-                    <ToUserName><![CDATA[${content.xml.FromUserName[0]}]]></ToUserName>  
-                    <FromUserName><![CDATA[${content.xml.ToUserName[0]}]]></FromUserName> 
-                    <CreateTime>1348831860</CreateTime> 
-                    <MsgType><![CDATA[text]]></MsgType>  
-                    <Content><![CDATA[${replyBody}]]></Content>
-                </xml>
-            `
             ctx.type = 'application/xml'
             ctx.body = xml
         }
