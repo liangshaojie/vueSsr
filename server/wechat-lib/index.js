@@ -2,6 +2,7 @@ import request from "request-promise";
 import path from "path";
 import fs from 'fs'
 import formstream from "formstream";
+import * as _ from 'lodash'
 
 const base = "https://api.weixin.qq.com/cgi-bin/";
 const api = {
@@ -81,13 +82,13 @@ export default class Wechat {
     }
     async handle(operation, ...args) {
         const tokenData = await this.fetchAccessToken();
-        const options = await this[operation](tokenData.access_token, ...args);
+        const options = this[operation](tokenData.access_token, ...args);
+        console.log(options)
         const data = await this.request(options);
-        console.log(data)
         return data;
     }
     // permanent是否是永久素材
-    async uploadMaterial(token, type, material, permanent) {
+    uploadMaterial(token, type, material, permanent) {
         let form = {}
         // 默认临时
         let url = api.temporary.upload
@@ -127,6 +128,58 @@ export default class Wechat {
             options.formData = form
         }
         return options
+    }
+
+    fetchMaterial(token,mediaId,type,permanent){
+        let form = {}
+        let fetchUrl = api.temporary.fetch
+
+        if(permanent){
+            fetchUrl = api.permanent.fetch
+        }
+
+        let url = fetchUrl + 'access_token='+token
+        let options = {method:'POST',url:url}
+
+        if(permanent){
+            form.media_id = mediaId
+            form.access_token = token
+            options.body = form
+        }else{
+            if(type === 'video'){
+                url = url.replace('https://','http://')
+            }
+            url += '&media_id='+mediaId
+        }
+        return options
+    }
+    deleteMaterial(token,mediaId){
+        const form = {
+            media_id:mediaId
+        }
+        const url = api.permanent.del + 'access_token='+token + '&media_id'+mediaId
+        return {method:'POST',url:url,body:form}
+    }
+    updateMaterial(token,mediaId,news){
+        const form = {
+            media_id:mediaId
+        }
+        _.extend(form,news)
+        const url = api.permanent.update + 'access_token='+token + '&media_id'+mediaId
+        return {method:'POST',url:url,body:form}
+    }
+
+    countMaterial(token){
+        const url = api.permanent.count + 'access_token='+token
+        return {method:'POST',url:url}
+    }
+
+    batchMaterial(token,options){
+        options.type = options.type || 'image'
+        options.offset = options.offset || 0
+        options.count = options.count || 10
+        const url = api.permanent.batch + 'access_token='+token
+        return {method:'POST',url:url,body:options}
     }
 }
 
