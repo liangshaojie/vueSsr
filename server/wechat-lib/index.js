@@ -3,6 +3,7 @@ import path from "path";
 import fs from 'fs'
 import formstream from "formstream";
 import * as _ from 'lodash'
+import { sign } from './util'
 
 const base = "https://api.weixin.qq.com/cgi-bin/";
 const api = {
@@ -47,6 +48,9 @@ const api = {
         addconditional: base + 'menu/addconditional?',
         delconditional: base + 'menu/delconditional?',
         get_current_selfmenu_info: base + 'get_current_selfmenu_info?',
+    },
+    ticket:{
+        get: base + 'ticket/getticket?',
     }
 }
 
@@ -58,6 +62,8 @@ export default class Wechat {
         this.appSecret = opts.appSecret;
         this.getAccessToken = opts.getAccessToken;
         this.saveAccessToken = opts.saveAccessToken;
+        this.getTicket = opts.getTicket
+        this.saveTicket = opts.saveTicket
         this.fetchAccessToken();
     }
 
@@ -74,7 +80,7 @@ export default class Wechat {
     // 拿token
     async fetchAccessToken() {
         let data = await this.getAccessToken();
-        if (!this.isValidAccessToken(data)) {
+        if (!this.isValidToken(data,'access_token')) {
             data = await this.updateAccessToken();
         }
         await this.saveAccessToken(data);
@@ -83,6 +89,16 @@ export default class Wechat {
         // }
         return data;
     }
+
+    async fetchTicket(token) {
+        var data = await this.getTicket()
+        if (!this.isValidToken(data,'ticket')) {
+            data = await this.updateTicket(token)
+        }
+        await this.saveTicket(data)
+        return data
+    }
+
 
     // 更新
     async updateAccessToken() {
@@ -94,17 +110,26 @@ export default class Wechat {
         return data;
     }
 
-    isValidAccessToken(data) {
-        if (!data || !data.assess_token || !data.expires_in) {
-            return false;
+    async updateTicket(token) {
+        const url = api.ticket.get + 'access_token=' + token +'&type=jsapi'
+        const data = await this.request({url: url})
+        const now = (new Date().getTime())
+        const expirsIn = now + (data.expires_in - 20) * 1000
+        data.expires_in = expirsIn
+        return data
+    }
+
+    isValidToken(data,name) {
+        if (!data || !data[name] || !data.expires_in) {
+            return false
         }
-        const expirsIn = data.expires_in;
-        const now = (new Date().getTime());
+        const expirsIn = data.expires_in
+        const now = (new Date().getTime())
 
         if (now < expirsIn) {
-            return true;
+            return true
         } else {
-            return false;
+            return false
         }
     }
     async handle(operation, ...args) {
@@ -356,6 +381,10 @@ export default class Wechat {
     get_current_selfmenu_info(){
         const url = api.menu.get_current_selfmenu_info + 'access_token=' + token
         return {method: 'GET', url: url}
+    }
+
+    sign(ticket,url){
+        return sign(ticket,url);
     }
 }
 
