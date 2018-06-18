@@ -20,6 +20,25 @@ const api = {
         update: base + 'material/update_news?',
         count: base + 'material/get_materialcount?',
         batch: base + 'material/batchget_material?',
+    },
+    tag: {
+        create: base + 'tags/create?',
+        fetch: base + 'tags/get?',
+        update: base + 'tags/update?',
+        del: base + 'tags/delete?',
+        fetchUsers: base + 'user/tag/get?',
+        batchTag: base + 'tags/members/batchtagging?',
+        batchUnTag: base + 'tags/members/batchuntagging?',
+        getTagList: base + 'tags/getidlist?'
+    },
+    user: {
+        remark: base + 'user/info/updateremark?',
+        info: base + 'user/info?',
+        batchgetInfo: base + 'user/info/batchget?',
+        fetchUserList: base + 'user/get?',
+        getBlackList: base + 'tags/members/getblacklist?',
+        batchBlackList: base + 'tags/members/batchblacklist?',
+        batchUnBlackList: base + 'tags/members/batchunblacklist?'
     }
 }
 
@@ -180,6 +199,115 @@ export default class Wechat {
         options.count = options.count || 10
         const url = api.permanent.batch + 'access_token='+token
         return {method:'POST',url:url,body:options}
+    }
+
+    //重建一个标签
+    createTag(token, name) {
+        const form = {
+            tag: {
+                name: name
+            }
+        }
+        const url = api.tag.create + 'access_token=' + token
+
+        return {method: 'POST', url: url, body: form}
+    }
+
+    //获取公众号已创建的标签
+    fetchTag(token) {
+        const url = api.tag.fetch + 'access_token=' + token
+        return {method: 'GET', url: url}
+    }
+
+    //编辑标签
+    uploadTag(token, id, name) {
+        const form = {
+            "tag": {
+                "id": id,
+                "name": name
+            }
+        }
+        const url = api.tag.update + 'access_token=' + token
+        return {method: 'POST', url: url, body: form}
+    }
+
+    // 删除标签
+    delTag(token, id) {
+        const form = {
+            "tag": {
+                "id": id,
+            }
+        }
+        const url = api.tag.del + 'access_token=' + token
+        return {method: 'POST', url: url, body: form}
+    }
+
+    //获取标签下粉丝列表
+    fetchTagUsers(token, tagid, next_openid) {
+        let form = {
+            "tagid": tagid,
+            "next_openid": next_openid || ''
+        }
+        const url = api.tag.fetchUsers + 'access_token=' + token
+        return {method: 'POST', url: url, body: form}
+    }
+
+    //批量为用户打标签
+    batchTag(token, openid_list, tagid, unTag) {
+        let form = {
+            "openid_list": openid_list,
+            "tagid": tagid
+        }
+        let url;
+        if (unTag) {
+            url = api.tag.batchUnTag + 'access_token=' + token
+        } else {
+            url = api.tag.batchTag + 'access_token=' + token
+        }
+        return {method: 'POST', url: url, body: form}
+    }
+
+    //获取用户身上的标签列表
+    getTagList(token, openid) {
+        let form = {
+            "openid": openid
+        }
+        const url = api.tag.getTagList + 'access_token=' + token
+        return {method: 'POST', url: url, body: form}
+    }
+
+    //设置用户备注名
+    remarkUser(token, openid, remark) {
+        let form = {
+            "openid": openid,
+            "remark": remark
+        }
+        const url = api.user.remark + 'access_token=' + token
+        return {method: 'POST', url: url, body: form}
+    }
+
+    //获取用户基本信息
+    getUserInfo(token, openid, lang) {
+        const url = `${api.user.info}access_token=${token}&openid=${openid}&lang=${lang || 'zh_CN'}`
+        console.log(url);
+        return {method: 'GET', url: url}
+    }
+
+    //批量获取用户基本信息
+    batchUserInfo(token,user_list) {
+        let form = {
+            "user_list": user_list
+        }
+        console.log(form);
+        const url = api.user.batchgetInfo + 'access_token=' + token
+        console.log(url);
+        return {method: 'POST', url: url, body: form}
+    }
+
+    //获取用户列表
+    fetchUserList(token, next_openid) {
+        const url = `${api.user.fetchUserList}access_token=${token}&next_openid= ${next_openid || ''}`
+        return {method: 'GET', url: url}
     }
 }
 

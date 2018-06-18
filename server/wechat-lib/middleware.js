@@ -35,7 +35,6 @@ export default function(opts, reply) {
 
             const xml = util.tpl(replyBody,msg)
 
-            console.log(xml)
             ctx.status = 200
             ctx.type = 'application/xml'
             ctx.body = xml

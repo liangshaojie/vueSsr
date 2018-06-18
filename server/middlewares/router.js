@@ -8,9 +8,9 @@ import wechatMiddle from "../wechat-lib/middleware";
 export const router = app => {
     const router = new Router();
     router.all("/wechat-head", wechatMiddle(config.wechat, reply));
-    router.get("/upload", async (ctx, next) => {
-        let mp = require("../wechat");
-        let client = mp.getWechat();
+    // router.get("/upload", async (ctx, next) => {
+    //     let mp = require("../wechat");
+    //     let client = mp.getWechat();
         // 上传临时素材
         // const data = await client.handle("uploadMaterial", "video", resolve(__dirname, "../../ice.mp4"));
         //上传永久素材（视频）
@@ -52,9 +52,9 @@ export const router = app => {
         // { media_id: 'i4XscoVjcjt_9IkfC4QyVqXxzyYhAEII0l04g96RQus',
         //     url: 'http://mmbiz.qpic.cn/mmbiz_jpg/pjSjJL7Xtz8OI3eR4lgwr1YymhjSCTX1uPXJ9vJg8ELbHnjpfcTOibBTkBjUHJ5ZcAPHFjPmsMsSDWPzpCOkq1Q/0?wx_fmt=jpeg' }
         // 获取素材
-        const data = await client.handle('fetchMaterial', 'i4XscoVjcjt_9IkfC4QyVqXxzyYhAEII0l04g96RQus', 'image',{})
-        console.log(data)
-    });
+        // const data = await client.handle('fetchMaterial', 'i4XscoVjcjt_9IkfC4QyVqXxzyYhAEII0l04g96RQus', 'image',{})
+        // console.log(data)
+    // });
 
     app.use(router.routes()).use(router.allowedMethods());
 };
