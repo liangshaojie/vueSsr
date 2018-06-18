@@ -39,6 +39,14 @@ const api = {
         getBlackList: base + 'tags/members/getblacklist?',
         batchBlackList: base + 'tags/members/batchblacklist?',
         batchUnBlackList: base + 'tags/members/batchunblacklist?'
+    },
+    menu: {
+        create: base + 'menu/create?',
+        get: base + 'menu/get?',
+        del: base + 'menu/delete?',
+        addconditional: base + 'menu/addconditional?',
+        delconditional: base + 'menu/delconditional?',
+        get_current_selfmenu_info: base + 'get_current_selfmenu_info?',
     }
 }
 
@@ -307,6 +315,46 @@ export default class Wechat {
     //获取用户列表
     fetchUserList(token, next_openid) {
         const url = `${api.user.fetchUserList}access_token=${token}&next_openid= ${next_openid || ''}`
+        return {method: 'GET', url: url}
+    }
+
+    //自定义菜单创建接口
+    createMenu(token,menu) {
+        const url = api.menu.create + 'access_token=' + token
+        console.log(url);
+        console.log({method: 'POST', url: url, body: menu});
+        return {method: 'POST', url: url, body: menu}
+    }
+
+    // 获取菜单
+    getMenu(token){
+        const url = api.menu.get + 'access_token=' + token
+        console.log(url);
+        return {method: 'GET', url: url}
+    }
+
+    delMenu(token){
+        const url = api.menu.del + 'access_token=' + token
+        return {method: 'GET', url: url}
+    }
+    addconditional(token,menu,rule){
+        const url = api.menu.addconditional + 'access_token=' + token
+        const form = {
+            "button":menu,
+            "matchrule":rule
+        }
+        return {method: 'POST', url: url, body: form}
+    }
+
+    delconditional(token,menuid){
+        const url = api.menu.delconditional + 'access_token=' + token
+        const form = {
+            "menuid":menuid
+        }
+        return {method: 'POST', url: url, body: form}
+    }
+    get_current_selfmenu_info(){
+        const url = api.menu.get_current_selfmenu_info + 'access_token=' + token
         return {method: 'GET', url: url}
     }
 }

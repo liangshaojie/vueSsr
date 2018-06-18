@@ -2,6 +2,8 @@ const tip = "欢迎来到王者荣耀！";
 export default async (ctx, next) => {
     const message = ctx.weixin;
 
+    console.log(message)
+
     let mp = require("../wechat");
     let client = mp.getWechat();
 
@@ -13,6 +15,10 @@ export default async (ctx, next) => {
             console.log("取消关注");
         } else if (message.Event === "LOCATION") {
             ctx.body = message.Latitude + ":" + message.Longitude;
+        }else if (message.Event === 'VIEW') {
+            ctx.body = message.EventKey + message.MenuId
+        } else if (message.Event === 'pic_sysphoto') {
+            ctx.body = message.Count +'photos sent'
         }
     } else if (message.MsgType === "text") {
         if(message.Content === '1'){
@@ -45,10 +51,20 @@ export default async (ctx, next) => {
             // ],100)
 
             // 获取用户身上的标签列表
-            const data = await client.handle('getTagList','oOUx409bCtaJlG9rbVFCzGohAJtY')
+            // const data = await client.handle('getTagList','oOUx409bCtaJlG9rbVFCzGohAJtY')
 
+            // console.log(data)
+        }else if(message.Content === '2'){
 
-            console.log(data)
+            // 获取菜单
+            // const data = await client.handle('getMenu')
+
+            // 重建菜单
+            const menu = require('./menu').default
+            await client.handle('delMenu')
+            const data = await client.handle('createMenu',menu)
+
+            console.log(JSON.stringify(data))
         }
         ctx.body = message.Content;
     } else if (message.MsgType === "image") {
